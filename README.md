@@ -7,14 +7,17 @@
 
 The project is a work in progress, these are my next tasks:
 
-- [ ] Write tests for auth module
+- [x] Configure the database container
+- [ ] Configure the database model
 - [ ] Build the auth module
-- [ ] Write tests for user module 
-- [ ] Build the auth module
+
 
 ## 💻 Pre-requisites
 
-Before starting, make sure to have Node installed.
+Before starting, make sure to have Node and Docker installed.
+
+execute:
+```docker compose up -d```
 
 ## 📫 Contributing to Orbit
 
