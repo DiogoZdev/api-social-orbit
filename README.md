@@ -16,8 +16,10 @@ The project is a work in progress, these are my next tasks:
 
 Before starting, make sure to have Node and Docker installed.
 
-execute:
-```docker compose up -d```
+Execute:
+```
+docker compose up -d
+```
 
 ## 📫 Contributing to Orbit
 
