@@ -4,7 +4,7 @@ import { CreateBlogPostDto } from './dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
 
 @Controller('blog')
-export class BlogController {
+export class BlogPostController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
