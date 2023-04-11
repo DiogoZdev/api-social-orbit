@@ -4,4 +4,6 @@ export class CreateUserDto {
   password: string;
   passwordRepeat: string;
   role: string;
+  isActive: boolean;
+  memberSince: string;
 }
