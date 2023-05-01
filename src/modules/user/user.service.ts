@@ -2,77 +2,102 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../database/prisma.service';
+import { HashService } from '../utils/hash.service';
 
 @Injectable()
 export class UserService {
 
   constructor(
-    private prisma: PrismaService
-  ) {}
+    private prisma: PrismaService,
+    private hash: HashService
+  ) { }
 
-  create(createUserDto: CreateUserDto) {
+  async create(newUser: CreateUserDto) {
+    const user = await this.findOne(newUser.email);
 
-    delete createUserDto.passwordRepeat;
+    if (user) {
+      return {
+        code: 400,
+        message: 'User already exists'
+      };
+    }
 
-    // to do: check if email is unique
-    // to do: hash password
+    if (newUser.password !== newUser.passwordRepeat) {
+      return {
+        code: 400,
+        message: 'Passwords do not match'
+      };
+    }
+
+    delete newUser.passwordRepeat;
+
+    await this.hash.hashString(newUser.password).then((result) => {
+      newUser.password = result;
+    });
 
     try {
-      return this.prisma.user.create({
-        data: createUserDto,
-      })
+      await this.prisma.user.create({
+        data: newUser,
+      });
+
+      return {
+        code: 201,
+        message: `User ${newUser.name} created successfully`,
+      }
     }
     catch (error) {
       return {
+        code: 500,
         message: 'An error occurred while creating the user',
-        error: error.message
       }
     }
   }
 
-  findOne(id: number) {
-    try {
-      return this.prisma.user.findUnique({
-        where: {
-          id,
-        },
-      })
-    }
-    catch (error) {
-      return {
-        message: 'An error occurred while finding the user',
-        error: error.message
+  findOne(email: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
       }
-    }
+    })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     try {
-      return this.prisma.user.update({
+      await this.prisma.user.update({
         where: {
           id,
         },
         data: updateUserDto,
-      })
+      });
+      return {
+        code: 200,
+        message: 'User updated successfully',
+      }
     }
     catch (error) {
       return {
+        code: 500,
         message: 'An error occurred while updating the user',
         error: error.message
       }
     }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     try {
-      return this.prisma.user.delete({
+      await this.prisma.user.delete({
         where: {
           id,
         },
-      })
+      });
+      return {
+        code: 200,
+        message: 'User deleted successfully',
+      }
     }
     catch (error) {
       return {
+        code: 500,
         message: 'An error occurred while deleting the user',
         error: error.message
       }
