@@ -1,15 +1,9 @@
-import { INestApplication, OnModuleInit } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"
 
-export class PrismaService extends PrismaClient implements OnModuleInit {
+const globalPrisma = global as unknown as { prisma: PrismaClient };
 
-  async onModuleInit() {
-    await this.$connect();
-  }
+export const prisma = globalPrisma.prisma || new PrismaClient({
+    log: ["query"],
+});
 
-  async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
-      await app.close();
-    })
-  }
-}
+if (process.env.NODE_ENV !== "production") globalPrisma.prisma = prisma;

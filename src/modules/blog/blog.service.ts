@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBlogPostDto } from './dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
-import { PrismaService } from '../database/prisma.service';
+import { prisma } from 'src/modules/database/prisma.service';
 
 @Injectable()
 export class BlogService {
 
-  constructor(
-    private prisma: PrismaService
-  ) { }
-
   create(createBlogDto: CreateBlogPostDto) {
     try {
-      this.prisma.blogPost.create({
+      prisma.blogPost.create({
         data: createBlogDto
       })
     }
@@ -26,7 +22,7 @@ export class BlogService {
 
   findAll() {
     try {
-      return this.prisma.blogPost.findMany()
+      return prisma.blogPost.findMany()
     }
     catch (error) {
       return {
@@ -38,7 +34,7 @@ export class BlogService {
 
   findOne(id: number) {
     try {
-      return this.prisma.blogPost.findUnique({
+      return prisma.blogPost.findUnique({
         where: {
           id: id
         }
@@ -54,7 +50,7 @@ export class BlogService {
 
   update(id: number, updateBlogPostDto: UpdateBlogPostDto) {
     try {
-      return this.prisma.blogPost.update({
+      return prisma.blogPost.update({
         where: {
           id: id
         },
@@ -71,7 +67,7 @@ export class BlogService {
 
   remove(id: number) {
     try {
-      return this.prisma.blogPost.delete({
+      return prisma.blogPost.delete({
         where: {
           id: id
         }

@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { PrismaService } from '../database/prisma.service';
+import { prisma } from '../database/prisma.service';
 
 @Injectable()
 export class ProjectService {
 
-  constructor(
-    private prisma: PrismaService,
-  ) { }
-
   create(createProjectDto: CreateProjectDto) {
     try {
-      return this.prisma.project.create({
+      return prisma.project.create({
         data: createProjectDto,
       });
     } catch (error) {
@@ -26,7 +22,7 @@ export class ProjectService {
 
   findAll() {
     try {
-      return this.prisma.project.findMany();
+      return prisma.project.findMany();
     }
     catch (error) {
       return {
@@ -38,7 +34,7 @@ export class ProjectService {
 
   findOne(id: number) {
     try {
-      return this.prisma.project.findUnique({
+      return prisma.project.findUnique({
         where: {
           id: id,
         },
@@ -54,7 +50,7 @@ export class ProjectService {
 
   update(id: number, updateProjectDto: UpdateProjectDto) {
     try {
-      return this.prisma.project.update({
+      return prisma.project.update({
         where: {
           id: id,
         },
@@ -71,7 +67,7 @@ export class ProjectService {
 
   remove(id: number) {
     try {
-      return this.prisma.project.delete({
+      return prisma.project.delete({
         where: {
           id: id,
         },
