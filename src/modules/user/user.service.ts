@@ -9,17 +9,26 @@ export class UserService {
 
   async create(newUser: CreateUserDto) {
     const user = await this.findOne(newUser.email);
+
     if (user) {
-      throw new Error('User already exists');
+      return {
+        message: 'User already exists',
+        status: 400
+      }
     }
 
     const salt = await bcrypt.genSalt(11)
     newUser.password = await bcrypt.hash(newUser.password, salt);
 
     try {
-      return prisma.user.create({
+      const createdUser = await prisma.user.create({
         data: newUser,
       })
+
+      return {
+        message: 'User created successfully',
+        user: createdUser.email
+      }
     }
     catch (error) {
       return {
