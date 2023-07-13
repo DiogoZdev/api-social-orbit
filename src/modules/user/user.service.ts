@@ -2,20 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { prisma } from '../database/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
 
-  create(createUserDto: CreateUserDto) {
+  async create(newUser: CreateUserDto) {
+    const user = await this.findOne(newUser.email);
+    if (user) {
+      throw new Error('User already exists');
+    }
 
-    delete createUserDto.passwordRepeat;
-
-    // to do: check if email is unique
-    // to do: hash password
+    const salt = await bcrypt.genSalt(11)
+    newUser.password = await bcrypt.hash(newUser.password, salt);
 
     try {
       return prisma.user.create({
-        data: createUserDto,
+        data: newUser,
       })
     }
     catch (error) {
@@ -26,11 +29,11 @@ export class UserService {
     }
   }
 
-  findOne(id: number) {
+  findOne(username: string) {
     try {
-      return prisma.user.findUnique({
+      return prisma.user.findFirst({
         where: {
-          id,
+          email: username
         },
       })
     }
