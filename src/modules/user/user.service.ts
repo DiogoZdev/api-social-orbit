@@ -38,20 +38,16 @@ export class UserService {
     }
   }
 
-  findOne(username: string) {
-    try {
-      return prisma.user.findFirst({
-        where: {
-          email: username
-        },
-      })
-    }
-    catch (error) {
-      return {
-        message: 'An error occurred while finding the user',
-        error: error.message
-      }
-    }
+  async findOne(username: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: username
+      },
+    });
+
+    if (user) return user;
+    
+    return null;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
