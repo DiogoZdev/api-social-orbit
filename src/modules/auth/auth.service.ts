@@ -28,9 +28,8 @@ export class AuthService {
 
     async hashPw(pw: string) {
         const salt = await bcrypt.genSalt(+process.env.SALT_ROUNDS)
-        const a =  await bcrypt.hash(pw, salt);
-        console.log(a);
-        return a;
+        const hashed =  await bcrypt.hash(pw, salt);
+        return hashed;
     }
 
 
