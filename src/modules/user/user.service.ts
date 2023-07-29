@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { prisma } from '../database/prisma.service';
 import { AuthService } from '../auth/auth.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -24,8 +25,10 @@ export class UserService {
     newUser.password = await this.auth.hashPw(newUser.password);
 
     try {
+      newUser.memberSince = new Date().toISOString();
+
       const createdUser = await prisma.user.create({
-        data: newUser,
+        data: newUser as Prisma.UserCreateInput,
       })
 
       return {

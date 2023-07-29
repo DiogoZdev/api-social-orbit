@@ -14,12 +14,13 @@ export class AuthService {
     }
 
     async signIn({ username, password }: IUserLogin) {
-        const { password: hashedPassword, ...user } = await this.findOneUser(username);
+        const { password: hashedPassword, isActive, email, ...user } = await this.findOneUser(username);
         const validLogin = await this.validate({ pw: password, hashedPw: hashedPassword });
 
         if (user && validLogin) {
             return {
-                access_token: this.jwt.sign(user, { secret: process.env.JWT_SECRET })
+                token: this.jwt.sign(user, { secret: process.env.JWT_SECRET }),
+                user
             }
         }
         return new UnauthorizedException();
