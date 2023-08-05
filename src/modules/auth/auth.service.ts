@@ -13,8 +13,8 @@ export class AuthService {
         return bcrypt.compare(pw, hashedPw);
     }
 
-    async signIn({ username, password }: IUserLogin) {
-        const { password: hashedPassword, isActive, email, ...user } = await this.findOneUser(username);
+    async signIn({ email, password }: IUserLogin) {
+        const { password: hashedPassword, isActive, ...user } = await this.findOneUser(email);
         const validLogin = await this.validate({ pw: password, hashedPw: hashedPassword });
 
         if (user && validLogin) {
