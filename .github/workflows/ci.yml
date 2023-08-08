@@ -1,6 +1,8 @@
 name: CI test
 
-on: [push]
+on:
+    push:
+        branches: ["main", "dev"]
 
 jobs:
     build:
@@ -10,4 +12,4 @@ jobs:
         steps:
             - uses: actions/checkout@v1
             - name: Test CI script
-              run: echo CI file is working
+              run: echo new CI file is working
